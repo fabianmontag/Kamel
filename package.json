@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@monaco-editor/react": "^4.6.0",
     "clsx": "^2.1.1",
     "flexlayout-react": "^0.8.1",
     "is-svg": "^5.1.0",

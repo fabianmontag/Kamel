@@ -60,7 +60,7 @@ const App = () => {
         });
     }, []);
 
-    const run = () => {
+    const run = (code: string) => {
         if (toplevelInstance.current && outputRef.current) {
             outputRef.current.innerHTML = "";
             toplevel.reset();
@@ -78,7 +78,7 @@ const App = () => {
         const component = node.getComponent();
 
         if (component === "Editor") {
-            return <EditorEnv code={code} setCode={setCode} />;
+            return <EditorEnv code={code} setCode={setCode} run={run} />;
         } else if (component === "Toplevel") {
             return <ToplevelOutput ref={outputRef} runSingle={runSingle} />;
         }
@@ -88,7 +88,7 @@ const App = () => {
         const keydown = (e: KeyboardEvent) => {
             if (e.metaKey && e.key === "Enter") {
                 e.preventDefault();
-                run();
+                run(code);
             }
         }
 
@@ -96,11 +96,11 @@ const App = () => {
         return () => {
             window.removeEventListener("keydown", keydown);
         }
-    }, [])
+    }, [code, run])
 
     return (
         <div className="w-screen h-screen flex flex-col bg-background overflow-hidden">
-            <Toolbar run={run} />
+            <Toolbar run={() => run(code)} />
             <div className="w-full h-full p-2 pt-0">
                 <div className="w-full h-full overflow-hidden relative">
                     <Layout factory={factory} model={model} />

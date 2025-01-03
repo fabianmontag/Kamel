@@ -1,14 +1,20 @@
-import { Editor, type Monaco } from "@monaco-editor/react";
 import { languages } from "monaco-editor";
-import React from "react";
+import * as monaco from "monaco-editor";
+
+import React, { useEffect, useRef } from "react";
 
 interface EditorEnvProps {
     code: string;
     setCode: React.Dispatch<React.SetStateAction<string>>;
+    run: (c: string) => void
 }
 
-const EditorEnv: React.FunctionComponent<EditorEnvProps> = ({ code, setCode }) => {
-    const handleEditorDidMount = (monaco: Monaco) => {
+const EditorEnv: React.FunctionComponent<EditorEnvProps> = ({ code, setCode, run }) => {
+    const editor = useRef(null);
+
+    useEffect(() => {
+        let editorC: monaco.editor.IStandaloneCodeEditor;
+
         monaco.languages.register({ id: "ocaml" });
         monaco.languages.setMonarchTokensProvider("ocaml", {
             tokenizer: {
@@ -286,18 +292,51 @@ const EditorEnv: React.FunctionComponent<EditorEnvProps> = ({ code, setCode }) =
                 return { suggestions: suggestions as languages.CompletionItem[] };
             },
         });
-    };
+
+        if (editor.current) {
+            editorC = monaco.editor.create(editor.current, {
+                value: code,
+                language: "ocaml",
+                theme: "ocamlTheme",
+                scrollbar: { useShadows: false },
+                minimap: { enabled: false },
+                automaticLayout: true,
+                selectOnLineNumbers: false,
+                stickyScroll: {
+                    enabled: false
+                }
+            });
+
+            editorC.onDidChangeModelContent(() => {
+                const newValue = editorC.getValue();
+                setCode(newValue);
+            });
+
+            editorC.addAction({
+                keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+                run: () => { run(editorC.getValue()) },
+                label: "test",
+                id: "tes133",
+            });
+        }
+
+        return () => {
+            editorC.dispose();
+        }
+    }, []);
 
     return (
         <div className="w-full h-full bg-secondary overflow-hidden">
-            <Editor
+            {/* <Editor
                 value={code}
                 onChange={(c) => setCode(c ?? "")}
                 theme="ocamlTheme"
                 language="ocaml"
                 beforeMount={handleEditorDidMount}
                 options={{ scrollbar: { useShadows: false }, minimap: { enabled: false } }}
-            />
+                onMount={handleMount}
+            /> */}
+            <div className="w-full h-full" ref={editor}></div>
         </div>
     );
 };
