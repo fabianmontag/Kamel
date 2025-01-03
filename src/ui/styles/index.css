@@ -1,0 +1,11 @@
+/* body width and height to full view */
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
+/* root element height and width to take full body */
+#root {
+    height: 100%;
+    width: 100%;
+}

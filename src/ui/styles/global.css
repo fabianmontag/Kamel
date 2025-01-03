@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --tertiary: 0 0% 20%;
+    --tertiary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 35%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --border-radius: 5px;
+}
+
+.sharp {
+    opacity: 0.6;
+}
+
+.sharp:before {
+    content: "# ";
+    line-height: 18px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #adadad;
+}
+
+/* syntax and io highlighting */
+.caml {
+    color: rgb(0, 190, 92);
+    font-style: italic;
+    margin: 5px 0px;
+}
+
+.stderr {
+    color: #e01f27;
+}
+
+.errorloc {
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: #e01f27;
+}
+
+.clear {
+    clear: both;
+}
+
+.sharp .id {
+    color: gray;
+}
+
+/* keywords */
+.sharp .kw0 {
+    color: #569cd6;
+}
+.sharp .kw1 {
+    color: #569cd6;
+}
+.sharp .kw2 {
+    color: #569cd6;
+}
+
+/* types */
+.sharp .kw3 {
+    color: #26c0a6;
+}
+
+.sharp .kw4 {
+    color: gray;
+}
+
+.sharp .comment {
+    color: gray;
+}
+
+.sharp .string {
+    color: #ce9178;
+}
+
+.sharp .text {
+    color: gray;
+}
+
+.sharp .numeric {
+    color: #b5cea8;
+}
+
+.sharp .directive {
+    color: gray;
+}
+
+.sharp .escape {
+    color: gray;
+}
+
+.sharp .symbol0 {
+    color: gray;
+}
+
+.sharp .symbol1 {
+    color: gray;
+}
+
+.sharp .constant {
+    color: #569cd6;
+}
