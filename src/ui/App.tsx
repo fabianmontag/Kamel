@@ -1,12 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import EditorEnv from "./components/EditorEnv";
+import { useEffect, useRef } from "react";
+import { useCode } from "./hooks/useCode";
+
 import { IJsonModel, Layout, Model, TabNode } from "flexlayout-react";
+
+import EditorEnv from "./components/EditorEnv";
 import ToplevelOutput from "./components/ToplevelOutput";
 import Toolbar from "./components/Toolbar";
+
 import "./styles/windowManager.css";
 
 const modelJSON: IJsonModel = {
-    global: { splitterEnableHandle: true, splitterSize: 10 },
+    global: { splitterEnableHandle: true, splitterSize: 10, rootOrientationVertical: false, tabEnableRename: false, tabMinWidth: 100 },
     borders: [],
     layout: {
         type: "row",
@@ -49,7 +53,7 @@ const initialCode = prod
     : `(*\n block comment\n *) (* line comment *) \nlet s = "hello world" \nlet (x: int) = 19+5*5;; \nlet x = 10;; \nlet y = 20;; \nlet rec f x = f x;; \nlet rec iter f k = if f k then k else iter f (k+1);; \nlet sqrt x = iter (fun k -> (k+1)*(k+1) > x) 0;; \nsqrt 26;; \nList.map (fun k -> k) [1;2;3;4;5];; \ntype tree = T of tree list;;`;
 
 const App = () => {
-    const [code, setCode] = useState(initialCode);
+    const [code, setCode] = useCode(initialCode);
 
     const outputRef = useRef<HTMLDivElement>(null);
     const toplevelInstance = useRef<((c: string, o: HTMLElement) => boolean) | null>(null);
