@@ -1,20 +1,17 @@
+; (executable
+;  (public_name toplevel)
+;  (name toplevel)
+;  (libraries toplevel)
+;  )
+
 (executables
  (names toplevel)
+ (public_names toplevel)
  (libraries
   js_of_ocaml-compiler
-  js_of_ocaml-tyxml
   js_of_ocaml-toplevel
-  lwt
-  js_of_ocaml-lwt
   js_of_ocaml.deriving
-  react
-  reactiveData
   str
-  (select
-   colorize.ml
-   from
-   (higlo -> colorize.higlo.ml)
-   (!higlo -> colorize.fake.ml))
   (select
    ppx_support.ml
    from
@@ -26,25 +23,9 @@
   (:standard -linkall))
  (modes byte js)
  (js_of_ocaml
-  (sourcemap no)
-  (build_runtime_flags
-   (:standard
-    --file
-    (:include html_types_path.txt))))
+  (sourcemap no))
  (preprocess
   (pps js_of_ocaml-ppx)))
-
-(rule
- (target html_types_path.txt)
- (action
-  (with-stdout-to
-   %{target}
-   (run
-    ocamlfind
-    query
-    tyxml.functor
-    -format
-    "%d/html_types.cmi:/static/cmis/"))))
 
 (rule
  (targets export.txt)
@@ -52,8 +33,6 @@
   (package js_of_ocaml-ppx)
   (package js_of_ocaml)
   (package js_of_ocaml-compiler)
-  (package js_of_ocaml-lwt)
-  (package js_of_ocaml-tyxml)
   (package js_of_ocaml-toplevel))
  (action
   (run
@@ -65,14 +44,7 @@
    js_of_ocaml-compiler.runtime
    js_of_ocaml-ppx.as-lib
    js_of_ocaml.deriving
-   lwt
-   tyxml.functor
-   tyxml.functor:html_types.cmi
-   react
-   reactiveData
    js_of_ocaml
-   js_of_ocaml-lwt
-   js_of_ocaml-tyxml
    js_of_ocaml-toplevel)))
 
 (rule
@@ -95,4 +67,4 @@
 
 (alias
  (name default)
- (deps toplevel.js toplevel.bc.js index.html))
+ (deps toplevel.js toplevel.bc.js))

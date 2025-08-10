@@ -1,0 +1,23 @@
+(lang dune 3.19)
+
+(name toplevel)
+
+(generate_opam_files true)
+
+; (source
+;  (github username/reponame))
+; (authors "Author Name <author@example.com>")
+; (maintainers "Maintainer Name <maintainer@example.com>")
+; (license LICENSE)
+; (documentation https://url/to/documentation)
+
+(package
+ (name toplevel)
+ (synopsis "OCaml toplevel for browser")
+ ; (description "A longer description")
+ (depends
+  ocaml
+  js_of_ocaml
+  js_of_ocaml-compiler
+  js_of_ocaml-toplevel
+  js_of_ocaml-ppx))

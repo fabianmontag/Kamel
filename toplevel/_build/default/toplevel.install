@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/toplevel/META"
+  "_build/install/default/lib/toplevel/dune-package"
+  "_build/install/default/lib/toplevel/opam"
+]
+bin: [
+  "_build/install/default/bin/toplevel"
+]
