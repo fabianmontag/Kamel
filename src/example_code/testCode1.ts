@@ -1,0 +1,1 @@
+export const testCode1 = `(*\n block comment\n *) (* line comment *) \nlet s = "hello world" \nlet (x: int) = 19+5*5;; \nlet x = 10;; \nlet y = 20;; \nlet rec f x = f x;; \nlet rec iter f k = if f k then k else iter f (k+1);; \nlet sqrt x = iter (fun k -> (k+1)*(k+1) > x) 0;; \nsqrt 26;; \nList.map (fun k -> k) [1;2;3;4;5];; \ntype tree = T of tree list;;`;

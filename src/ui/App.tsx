@@ -1,116 +1,82 @@
-import { useEffect, useRef } from "react";
-import { useCode } from "./hooks/useCode";
+import { useEffect, useState } from "react";
+import { useCode as useLSSavedCode } from "./hooks/useCode";
 
-import { IJsonModel, Layout, Model, TabNode } from "flexlayout-react";
-
-import EditorEnv from "./components/EditorEnv";
-import ToplevelOutput from "./components/ToplevelOutput";
 import Toolbar from "./components/Toolbar";
 
 import "./styles/windowManager.css";
 
-const modelJSON: IJsonModel = {
-    global: { splitterEnableHandle: true, splitterSize: 10, rootOrientationVertical: false, tabEnableRename: false, tabMinWidth: 100 },
-    borders: [],
-    layout: {
-        type: "row",
-        weight: 100,
-        children: [
-            {
-                type: "tabset",
-                weight: 50,
-                children: [
-                    {
-                        type: "tab",
-                        name: "Editor",
-                        component: "Editor",
-                        enableClose: false,
-                        enableRename: false,
-                    },
-                ],
-            },
-            {
-                type: "tabset",
-                weight: 50,
-                children: [
-                    {
-                        type: "tab",
-                        name: "Toplevel",
-                        component: "Toplevel",
-                        enableClose: false,
-                        enableRename: false,
-                    },
-                ],
-            },
-        ],
-    },
-};
-const model = Model.fromJson(modelJSON);
+import { interpreterCode } from "../example_code/interpreter";
+import { WindowManager } from "./components/WindowManager";
+import { useToplevelWorker } from "./hooks/useToplevelWorker";
+import { ThemeContext } from "./contexts/themeContext";
+import { useTheme } from "./hooks/useTheme";
 
 const prod = import.meta.env.PROD;
-const initialCode = prod
-    ? ""
-    : `(*\n block comment\n *) (* line comment *) \nlet s = "hello world" \nlet (x: int) = 19+5*5;; \nlet x = 10;; \nlet y = 20;; \nlet rec f x = f x;; \nlet rec iter f k = if f k then k else iter f (k+1);; \nlet sqrt x = iter (fun k -> (k+1)*(k+1) > x) 0;; \nsqrt 26;; \nList.map (fun k -> k) [1;2;3;4;5];; \ntype tree = T of tree list;;`;
+const initialCode = prod ? "" : interpreterCode;
 
 const App = () => {
-    const [code, setCode] = useCode(initialCode);
+    const [theme, setTheme] = useTheme();
 
-    const outputRef = useRef<HTMLDivElement>(null);
-    const toplevelInstance = useRef<((c: string, o: HTMLElement) => boolean) | null>(null);
+    const [autoRun, setAutoRun] = useState(false);
+    const [code, setCode] = useLSSavedCode(initialCode);
+    const [isRunning, evalResults, dispatchWorker] = useToplevelWorker();
 
-    useEffect(() => {
-        toplevelInstance.current = toplevel.setup((e) => {
-            if (outputRef.current) outputRef.current.appendChild(e);
-        });
-    }, []);
-
-    const run = (code: string) => {
-        if (toplevelInstance.current && outputRef.current) {
-            outputRef.current.innerHTML = "";
-            toplevel.reset();
-            toplevelInstance.current(code, outputRef.current);
-        }
+    const run = () => {
+        dispatchWorker({ type: "run", code });
     };
 
     const runSingle = (code: string) => {
-        if (toplevelInstance.current && outputRef.current) {
-            toplevelInstance.current(code, outputRef.current);
-        }
+        dispatchWorker({ type: "runSingle", code });
     };
 
-    const factory = (node: TabNode) => {
-        const component = node.getComponent();
-
-        if (component === "Editor") {
-            return <EditorEnv code={code} setCode={setCode} run={run} />;
-        } else if (component === "Toplevel") {
-            return <ToplevelOutput ref={outputRef} runSingle={runSingle} />;
-        }
+    const killWorker = () => {
+        dispatchWorker({ type: "kill" });
     };
 
+    // cmd+enter shortcut
     useEffect(() => {
         const keydown = (e: KeyboardEvent) => {
             if (e.metaKey && e.key === "Enter") {
                 e.preventDefault();
-                run(code);
+                run();
             }
-        }
+        };
 
         window.addEventListener("keydown", keydown);
         return () => {
             window.removeEventListener("keydown", keydown);
+        };
+    }, [code, run]);
+
+    // TODO: fix this, currently while it runs
+    // we can still change code, and after it ran
+    // we do not execute anymore
+    // + add timeout setting in worker reducer
+    useEffect(() => {
+        if (!isRunning && autoRun) {
+            run();
         }
-    }, [code, run])
+    }, [code]);
 
     return (
-        <div className="w-screen h-screen flex flex-col bg-background overflow-hidden">
-            <Toolbar run={() => run(code)} />
-            <div className="w-full h-full p-2 pt-0">
-                <div className="w-full h-full overflow-hidden relative">
-                    <Layout factory={factory} model={model} />
+        <ThemeContext.Provider value={{ theme, setTheme }}>
+            <div className="w-screen h-screen flex flex-col bg-background overflow-hidden">
+                <Toolbar code={code} run={run} autoRun={autoRun} toggleAutoRun={() => setAutoRun(!autoRun)} />
+                <div className="w-full h-full p-2 pt-0">
+                    <div className="w-full h-full overflow-hidden relative">
+                        <WindowManager
+                            code={code}
+                            setCode={setCode}
+                            run={run}
+                            runSingle={runSingle}
+                            isRunning={isRunning}
+                            evalResults={evalResults}
+                            killWorker={killWorker}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
+        </ThemeContext.Provider>
     );
 };
 

@@ -9,3 +9,30 @@ body {
     height: 100%;
     width: 100%;
 }
+
+/* scrollbars */
+::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+}
+::-webkit-scrollbar-thumb {
+    background: rgb(121, 121, 121, 0.4);
+}
+::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+}
+::-webkit-scrollbar-thumb:active {
+    background: rgb(121, 121, 121, 1);
+}
+
+::-webkit-scrollbar-track:vertical {
+    background: transparent;
+    border-left: 1px solid var(--color-muted);
+    border-right: 1px solid var(--color-muted);
+}
+
+::-webkit-scrollbar-track:horizontal {
+    background: transparent;
+    border-top: 1px solid var(--color-muted);
+    border-bottom: 1px solid var(--color-muted);
+}

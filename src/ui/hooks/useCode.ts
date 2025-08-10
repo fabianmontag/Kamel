@@ -1,7 +1,14 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
-export const useCode = (initalCode: string): [string, React.Dispatch<React.SetStateAction<string>>] => {
-    const [code, setCode] = useState(localStorage.getItem("code") ?? initalCode);
+const getCodeFromParams = (): string | null => {
+    const params = new URLSearchParams(document.location.search);
+    const code = params.get("code");
+    if (!code) return null;
+    else return atob(code);
+};
+
+export const useCode = (initalCode: string): [string, (s: string) => void] => {
+    const [code, setCode] = useState<string>(getCodeFromParams() ?? localStorage.getItem("code") ?? initalCode);
 
     // update localStorage on code update
     useEffect(() => {
@@ -9,4 +16,4 @@ export const useCode = (initalCode: string): [string, React.Dispatch<React.SetSt
     }, [code]);
 
     return [code, setCode];
-}
+};
