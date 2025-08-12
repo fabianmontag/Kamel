@@ -10,6 +10,7 @@ import { WindowManager } from "./components/WindowManager";
 import { useToplevelWorker } from "./hooks/useToplevelWorker";
 import { ThemeContext } from "./contexts/themeContext";
 import { useTheme } from "./hooks/useTheme";
+import { Settings } from "./components/Settings";
 
 const prod = import.meta.env.PROD;
 const initialCode = prod ? "" : interpreterCode;
@@ -20,6 +21,8 @@ const App = () => {
     const [autoRun, setAutoRun] = useState(false);
     const [code, setCode] = useLSSavedCode(initialCode);
     const [isRunning, evalResults, dispatchWorker] = useToplevelWorker();
+
+    const [openSettings, setOpenSettings] = useState(false);
 
     const run = () => {
         dispatchWorker({ type: "run", code });
@@ -61,7 +64,14 @@ const App = () => {
     return (
         <ThemeContext.Provider value={{ theme, setTheme }}>
             <div className="w-screen h-screen flex flex-col bg-background overflow-hidden">
-                <Toolbar code={code} run={run} autoRun={autoRun} toggleAutoRun={() => setAutoRun(!autoRun)} />
+                {openSettings && <Settings closeSettings={() => setOpenSettings(false)} />}
+                <Toolbar
+                    code={code}
+                    run={run}
+                    autoRun={autoRun}
+                    toggleAutoRun={() => setAutoRun(!autoRun)}
+                    openSettings={() => setOpenSettings(true)}
+                />
                 <div className="w-full h-full p-2 pt-0">
                     <div className="w-full h-full overflow-hidden relative">
                         <WindowManager

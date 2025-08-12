@@ -30,7 +30,7 @@
     --color-tab-selected: var(--color-text);
     --color-tab-selected-background: transparent;
     --color-tab-background-hover: hsl(var(--secondary));
-    --color-tab-unselected: rgba(0, 0, 0, 0.75);
+    --color-tab-unselected: hsl(var(--muted-foreground));
     --color-tab-unselected-background: transparent;
     --color-tab-textbox: var(--color-text);
     --color-tab-textbox-background: var(--color-3);

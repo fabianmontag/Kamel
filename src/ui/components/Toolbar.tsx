@@ -1,4 +1,4 @@
-import { Check, Moon, Play, Share, Square, Sun } from "lucide-react";
+import { Check, Moon, Play, Settings, Share, Square, Sun } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { twcm } from "../misc/twcm";
 import { useSaveThemeContext } from "../contexts/themeContext";
@@ -9,6 +9,7 @@ interface ToolbarProps {
     run: () => void;
     autoRun: boolean;
     toggleAutoRun: () => void;
+    openSettings: () => void;
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -35,7 +36,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, toggleAutoRun }) => {
+const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, toggleAutoRun, openSettings }) => {
     const [shared, setShared] = useState(false);
     const sharedRef = useRef(0);
     const { theme, setTheme } = useSaveThemeContext();
@@ -108,6 +109,10 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, to
                     ) : (
                         <Sun size={15} className="fill-primary stroke-primary" />
                     )}
+                </Button>
+
+                <Button onClick={openSettings}>
+                    <Settings size={15} className="stroke-primary" />
                 </Button>
             </div>
         </div>

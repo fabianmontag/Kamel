@@ -97,6 +97,7 @@ const EditorEnv: React.FunctionComponent<EditorEnvProps> = ({ code, setCode, run
                 stickyScroll: {
                     enabled: false,
                 },
+                tabSize: 4,
             });
 
             editorInstance.current.onDidChangeModelContent(() => {

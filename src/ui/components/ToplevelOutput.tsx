@@ -55,7 +55,7 @@ const ToplevelOutput: React.FunctionComponent<ToplevelOutputProps> = ({
                 )}
             </div>
 
-            <div className="w-full h-auto flex flex-row gap-2 items-center justify-center font-mono p-2 bg-background border-t border-border text-xs text-primary/80 bg-muted">
+            <div className="w-full h-12 flex flex-row gap-2 items-center justify-center font-mono p-2 bg-background border-t border-border text-xs text-primary/80 bg-muted">
                 {isRunning ? (
                     <div className="w-full h-auto flex flex-row items-center justify-between gap-2">
                         <div className="flex flex-row items-center gap-2">
