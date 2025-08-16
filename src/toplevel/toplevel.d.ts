@@ -2,7 +2,7 @@
 declare global {
     interface ToplevelEvalResultEntry {
         kind: "toplevel" | "stdout" | "stderr" | "exception";
-        chunk: String;
+        chunk: string;
         seq: number;
     }
 
@@ -15,7 +15,7 @@ declare global {
         compiledOcamlVersion: string;
         compiledJsOfOcamlVersion: string;
         reset(): void;
-        evalCode(c: String): ToplevelEvalResult;
+        evalCode(c: string): ToplevelEvalResult;
     }
 
     const toplevel: Toplevel;

@@ -8,27 +8,13 @@ import {
     ToplevelWorker,
 } from "../../toplevel/toplevelWorkerWrapper";
 
-interface TLWorkerRunAction {
-    type: "run";
-    code: String;
-}
-
-interface TLWorkerRunSingleAction {
-    type: "runSingle";
-    code: String;
-}
-
-interface TLWorkerKillAction {
-    type: "kill";
-}
+// action to be performed
+type TLWorkerAction = ({ code: string } & ({ type: "run" } | { type: "runSingle" })) | { type: "kill" };
 
 export interface EvalResult {
     type: "toplevel" | "stdout" | "stderr" | "exception";
-    msg: String;
+    msg: string;
 }
-
-// reducer action
-type TLWorkerAction = TLWorkerRunAction | TLWorkerRunSingleAction | TLWorkerKillAction;
 
 // custom reducer to elegantly handle worker stuff
 export const useToplevelWorker = (): [boolean, EvalResult[], (action: TLWorkerAction) => void] => {

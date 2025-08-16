@@ -2,7 +2,7 @@ import "./toplevel.js";
 
 export interface ToplevelWorkerEvalAction {
     type: "eval";
-    code: String;
+    code: string;
 }
 export interface ToplevelWorkerResetAction {
     type: "reset";
@@ -18,7 +18,7 @@ export type ToplevelWorkerEvalActionOutput =
     | {
           type: "eval";
           success: false;
-          errMsg?: String;
+          errMsg?: string;
       };
 
 export interface ToplevelWorkerResetActionOutput {

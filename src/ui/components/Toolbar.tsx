@@ -1,15 +1,15 @@
-import { Check, Moon, Play, Settings, Share, Square, Sun } from "lucide-react";
+import { Check, Moon, Play, Share, Square, Sun } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { twcm } from "../misc/twcm";
 import { useSaveThemeContext } from "../contexts/themeContext";
 import { defaultDarkTheme, defaultLightTheme } from "../hooks/useTheme";
+import { getURIDataFromCode } from "../misc/shareURI";
 
 interface ToolbarProps {
     code: string;
     run: () => void;
     autoRun: boolean;
     toggleAutoRun: () => void;
-    openSettings: () => void;
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -36,7 +36,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, toggleAutoRun, openSettings }) => {
+const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, toggleAutoRun }) => {
     const [shared, setShared] = useState(false);
     const sharedRef = useRef(0);
     const { theme, setTheme } = useSaveThemeContext();
@@ -50,7 +50,7 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, to
     };
 
     const handleShare = () => {
-        navigator.clipboard.writeText(window.location.href + "?code=" + btoa(code));
+        navigator.clipboard.writeText(window.location.href + "?code=" + getURIDataFromCode(code));
 
         setShared(true);
         clearTimeout(sharedRef.current);
@@ -67,7 +67,7 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, to
 
     return (
         <div className="w-full h-auto flex items-center justify-between gap-2">
-            <div className="w-1/6 h-auto flex flex-row items-center justify-start gap-1 p-2">
+            <div className="w-[130px] h-auto flex flex-row items-center justify-start gap-1 p-2">
                 <Button onClick={handleShare}>
                     {shared ? (
                         <>
@@ -83,7 +83,7 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, to
                 </Button>
             </div>
 
-            <div className="w-3/4 h-auto flex flex-row items-center justify-center gap-0.5 p-2">
+            <div className="w-auto h-auto flex flex-row items-center justify-center gap-0.5 p-2">
                 <Button firstLeft className="text-outputToplevel" onClick={run}>
                     <Play size={15} className="fill-outputToplevel stroke-outputToplevel" />
                     Run
@@ -102,17 +102,13 @@ const Toolbar: React.FunctionComponent<ToolbarProps> = ({ code, run, autoRun, to
                 )}
             </div>
 
-            <div className="w-1/6 h-auto flex flex-row items-center justify-end gap-1 p-2">
+            <div className="w-[130px] h-auto flex flex-row items-center justify-end gap-1 p-2">
                 <Button onClick={handleToggleTheme}>
                     {theme == defaultLightTheme ? (
                         <Moon size={15} className="fill-primary stroke-primary" />
                     ) : (
                         <Sun size={15} className="fill-primary stroke-primary" />
                     )}
-                </Button>
-
-                <Button onClick={openSettings}>
-                    <Settings size={15} className="stroke-primary" />
                 </Button>
             </div>
         </div>

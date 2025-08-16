@@ -22,8 +22,8 @@ const ToplevelOutput: React.FunctionComponent<ToplevelOutputProps> = ({
     };
 
     return (
-        <div className="w-full h-full flex flex-col">
-            <div className="w-full h-full flex flex-col text-xs font-mono overflow-y-auto bg-background min-w-[200px] overflow-y-auto gap-2 p-2">
+        <div className="w-full h-full flex flex-col overflow-auto">
+            <div className="w-full h-full flex flex-col text-xs font-mono overflow-y-auto bg-background min-w-[200px] overflow-y-auto gap-3 p-3">
                 {isRunning ? (
                     <p className="text-primary/80">Running...</p>
                 ) : evalResults.length == 0 ? (
@@ -31,31 +31,46 @@ const ToplevelOutput: React.FunctionComponent<ToplevelOutputProps> = ({
                         <p className="text-primary/50">Pretty empty here</p>
                     </div>
                 ) : (
-                    evalResults.map((e1, i1) =>
-                        e1.msg
-                            .split("\n")
-                            .filter((e) => e != "")
-                            .map((e2, i2) => (
-                                <p
-                                    className={twcm(
-                                        e1.type == "stderr" || e1.type == "exception"
-                                            ? "text-outputError"
-                                            : e1.type == "toplevel"
-                                            ? "text-outputToplevel"
-                                            : "text-primary",
-                                        ""
-                                    )}
-                                    key={i1 + "" + i2}
-                                >
-                                    <span className="text-primary/30 pr-2">{">"}</span>
-                                    {e2}
-                                </p>
-                            ))
-                    )
+                    evalResults
+                        .reduce((p: EvalResult[], c: EvalResult) => {
+                            // grp seperated error messages into one
+                            if (p.length > 0 && p[p.length - 1].type == "stderr" && c.type == "stderr") {
+                                const pc = p.slice(0, p.length - 1);
+                                const e: EvalResult = { type: "stderr", msg: p[p.length - 1].msg + "\n" + c.msg };
+                                return [...pc, e];
+                            } else {
+                                return [...p, c];
+                            }
+                        }, [])
+                        .map((e1, i1) => (
+                            <div className="flex flex-row gap-2" key={i1}>
+                                <span className="text-primary/50">{">"}</span>
+                                <div className="flex flex-col gap-1">
+                                    {e1.msg
+                                        .split("\n")
+                                        .filter((e) => e != "")
+                                        .map((e2, i2) => (
+                                            <p
+                                                className={twcm(
+                                                    e1.type == "stderr" || e1.type == "exception"
+                                                        ? "text-outputError"
+                                                        : e1.type == "toplevel"
+                                                        ? "text-outputToplevel"
+                                                        : "text-primary",
+                                                    ""
+                                                )}
+                                                key={i1 + "" + i2}
+                                            >
+                                                {e2}
+                                            </p>
+                                        ))}
+                                </div>
+                            </div>
+                        ))
                 )}
             </div>
 
-            <div className="w-full h-12 flex flex-row gap-2 items-center justify-center font-mono p-2 bg-background border-t border-border text-xs text-primary/80 bg-muted">
+            <div className="w-full h-12 flex flex-row gap-2 items-center justify-center font-mono px-3 p-2 bg-background border-t border-border text-xs text-primary/80 bg-muted min-w-[200px]">
                 {isRunning ? (
                     <div className="w-full h-auto flex flex-row items-center justify-between gap-2">
                         <div className="flex flex-row items-center gap-2">
@@ -83,7 +98,7 @@ const ToplevelOutput: React.FunctionComponent<ToplevelOutputProps> = ({
                 )}
             </div>
 
-            <div className="w-full h-auto flex flex-row gap-2 items-center justify-center font-mono p-2 bg-background border-t border-border text-sm bg-background">
+            <div className="w-full h-auto flex flex-row gap-2 items-center justify-center font-mono p-2 bg-background border-t border-border text-sm bg-background min-w-[200px]">
                 <p>{">"}</p>
                 <form
                     className="w-full h-full"
